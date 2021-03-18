@@ -6,8 +6,7 @@ import mazes.typeclasses.ShowOps._
 
 object MazeGeneratorApp extends App {
 
-  val startGrid = Grid.init(20, 5)
+  val startGrid = Grid.init(5, 5)
   val maze = binaryTree(startGrid)
-  // println(maze)
   println(show(maze))
 }

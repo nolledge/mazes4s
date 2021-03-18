@@ -9,24 +9,24 @@ class GridSpec extends AnyFlatSpec with Matchers {
   val mazeSize: Int = 3
   val maxIndex = mazeSize - 1
 
-  "The Grid" should "init a grid where one row has the same x coordinate" in {
+  "The Grid" should "init a grid where one row has the same y coordinate" in {
     // init field with 3 * 3 cells
     val grid = Grid.init(mazeSize, mazeSize)
 
-    grid.cells(0).forall(_.point.x == 0) shouldBe true
+    grid.cells(0).forall(_.point.y == 0) shouldBe true
   }
   "The Grid" should "init a grid with the neighbors set correctly" in {
     // init field with 3 * 3 cells
     val grid = Grid.init(mazeSize, mazeSize)
 
-    // first column should not have any western neighbors
-    grid.cells(0).forall(c => c.west.isEmpty) shouldBe true
-    // last column should not have any eastern neighbors
-    grid.cells(maxIndex).forall(c => c.east.isEmpty) shouldBe true
     // bottom row should not have any southern neighbors
-    grid.cells.forall(x => x(0).south.isEmpty) shouldBe true
-    // top row should not have any northern neighbors
-    grid.cells.forall(x => x(maxIndex).north.isEmpty) shouldBe true
+    grid.cells(0).forall(c => c.south.isEmpty) shouldBe true
+    // top row should not have any norhtern neighbors
+    grid.cells(maxIndex).forall(c => c.north.isEmpty) shouldBe true
+    // western column should not have any eastern neighbors
+    grid.cells.forall(y => y(0).west.isEmpty) shouldBe true
+    // eastern column should not have any eastern neighbors
+    grid.cells.forall(y => y(maxIndex).east.isEmpty) shouldBe true
 
     // sorrounded cell should have all the correct neighbors
     val cell = grid.cells(1)(1)

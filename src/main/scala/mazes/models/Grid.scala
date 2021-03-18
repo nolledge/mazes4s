@@ -3,31 +3,16 @@ package mazes.models
 import mazes.typeclasses.Show
 
 final case class Grid(
-    rowLength: Int,
-    columnLength: Int,
+    rows: Int,
+    columns: Int,
     cells: Vector[Vector[Cell]]
 )
 
 object Grid {
 
-  // original grid is y by x flip will create x by y
-  def flip(g: Grid): Grid = {
-    g.cells.flatten.foldLeft(Grid.init(g.columnLength, g.rowLength)) {
-      case (acc, elem) =>
-        Grid(
-          rowLength = acc.columnLength,
-          columnLength = acc.rowLength,
-          cells = acc.cells.updated(
-            elem.point.y,
-            acc.cells(elem.point.y).updated(elem.point.x, elem)
-          )
-        )
-    }
-  }
-
-  def init(rowLength: Int, columnLength: Int): Grid = {
-    val rI = 0.to(rowLength - 1).toVector
-    val cI = 0.to(columnLength - 1).toVector
+  def init(rows: Int, columns: Int): Grid = {
+    val yI = 0.to(rows - 1).toVector
+    val xI = 0.to(columns - 1).toVector
     def cellWithNeighbors(x: Int, y: Int): Cell =
       Cell.withUnlinkedNeighbors(
         point = Point(x, y),
@@ -35,27 +20,27 @@ object Grid {
         else { Option(Point(x - 1, y)) },
         south = if (y == 0) { Option.empty[Point] }
         else { Option(Point(x, y - 1)) },
-        north = if (y == columnLength - 1) { Option.empty[Point] }
+        north = if (y == rows - 1) { Option.empty[Point] }
         else { Option(Point(x, y + 1)) },
-        east = if (x == rowLength - 1) { Option.empty[Point] }
+        east = if (x == columns - 1) { Option.empty[Point] }
         else { Option(Point(x + 1, y)) }
       )
     Grid(
-      rowLength = rowLength,
-      columnLength = columnLength,
-      cells = rI.map(x => cI.map(y => cellWithNeighbors(x, y)))
+      rows = rows,
+      columns = columns,
+      cells = yI.map(y => xI.map(x => cellWithNeighbors(x, y)))
     )
   }
 
   def get(g: Grid)(p: Point): Option[Cell] =
-    g.cells.lift(p.x).flatMap(_.lift(p.y))
+    g.cells.lift(p.y).flatMap(_.lift(p.x))
 
-  def update(g: Grid)(c: Cell): Grid =
+  def update(g: Grid, c: Cell): Grid =
     Grid(
-      rowLength = g.rowLength,
-      columnLength = g.columnLength,
+      rows = g.rows,
+      columns = g.columns,
       cells =
-        g.cells.updated(c.point.x, g.cells(c.point.x).updated(c.point.y, c))
+        g.cells.updated(c.point.y, g.cells(c.point.y).updated(c.point.x, c))
     )
 
   implicit val gridShow: Show[Grid] = (g: Grid) => {
@@ -70,11 +55,8 @@ object Grid {
         case _                                      => "---"
       }
 
-    "+" + "---+".repeat(g.rowLength) + "\n" +
-      Grid
-        .flip(g)
-        .cells
-        .reverse
+    "+" + "---+".repeat(g.columns) + "\n" +
+      g.cells.reverse
         .map { r =>
           "|" + r.map(topRow).mkString + "\n" +
             "+" + r.map(bottom).mkString("+") + "+" + "\n"
