@@ -10,7 +10,8 @@ object BinaryTree extends BidiUpdater {
   def binaryTree(g: Grid): Grid = {
     withBidiLink(
       Grid(
-        size = g.size,
+        rowLength = g.rowLength,
+        columnLength = g.columnLength,
         cells = g.cells.map(r => r.map(tearWall))
       )
     )

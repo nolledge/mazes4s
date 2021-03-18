@@ -11,13 +11,13 @@ class GridSpec extends AnyFlatSpec with Matchers {
 
   "The Grid" should "init a grid where one row has the same x coordinate" in {
     // init field with 3 * 3 cells
-    val grid = Grid.init(mazeSize)
+    val grid = Grid.init(mazeSize, mazeSize)
 
     grid.cells(0).forall(_.point.x == 0) shouldBe true
   }
   "The Grid" should "init a grid with the neighbors set correctly" in {
     // init field with 3 * 3 cells
-    val grid = Grid.init(mazeSize)
+    val grid = Grid.init(mazeSize, mazeSize)
 
     // first column should not have any western neighbors
     grid.cells(0).forall(c => c.west.isEmpty) shouldBe true
