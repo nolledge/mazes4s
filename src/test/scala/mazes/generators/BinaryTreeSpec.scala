@@ -65,7 +65,6 @@ class BinaryTreeSpec extends AnyFlatSpec with Matchers {
   }
   "The binaryTreeAlg" should "have every link set bidirectional" in {
     val grid = Grid.init(rows, columns)
-    println("init test")
     val maze = binaryTree(grid)
     maze.cells.forall(
       _.forall(c =>
@@ -81,8 +80,6 @@ class BinaryTreeSpec extends AnyFlatSpec with Matchers {
               case East  => refCell.west.exists(_.hasLink)
               case West  => refCell.east.exists(_.hasLink)
             }
-            println(c)
-            println(refCell)
             correctReference && isLinked
           }
       )
