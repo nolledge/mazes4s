@@ -1,43 +1,41 @@
 package mazes.generators
 
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
 import mazes.models.Grid._
 import mazes.models.Grid
 import mazes.models.Cell
 import mazes.models.Direction._
 import mazes.generators.BinaryTree._
 
-class BinaryTreeSpec extends AnyFlatSpec with Matchers {
+class BinaryTreeSpec extends munit.FunSuite {
   val rows: Int = 5
   val columns: Int = 3
   val maxX = columns - 1
   val maxY = rows - 1
 
-  "The binaryTreeAlg" should "should have a root node with two links" in {
+  test("should have a root node with two links") {
     val grid = Grid.init(rows, columns)
     val maze = binaryTree(grid)
     val rootNode = maze.cells(maxY)(maxX)
-    rootNode.north.isEmpty shouldBe true
-    rootNode.east.isEmpty shouldBe true
-    rootNode.south.isDefined shouldBe true
-    rootNode.west.isDefined shouldBe true
+    assert(rootNode.north.isEmpty)
+    assert(rootNode.east.isEmpty)
+    assert(rootNode.south.isDefined)
+    assert(rootNode.west.isDefined)
   }
-  "The binaryTreeAlg" should "have a northern corridor" in {
+  test("have a northern corridor") {
     val grid = Grid.init(rows, columns)
     val maze = binaryTree(grid)
-    maze
-      .cells(maxY)
-      .forall(_.north.map(_.hasLink).getOrElse(true)) shouldBe true
+    assert(
+      maze
+        .cells(maxY)
+        .forall(_.north.map(_.hasLink).getOrElse(true))
+    )
   }
-  "The binaryTreeAlg" should "have a eastern corridor" in {
+  test("have a eastern corridor") {
     val grid = Grid.init(rows, columns)
     val maze = binaryTree(grid)
-    maze.cells.forall(r =>
-      r(maxX).east.map(_.hasLink).getOrElse(true)
-    ) shouldBe true
+    assert(maze.cells.forall(r => r(maxX).east.map(_.hasLink).getOrElse(true)))
   }
-  "The binaryTreeAlg" should "a northern neighbor should itself have a southern neighbor" in {
+  test("a northern neighbor should itself have a southern neighbor") {
     val grid = Grid.init(rows, columns)
     val maze = binaryTree(grid)
     val cellWithNorthernNeighbor =
@@ -47,42 +45,44 @@ class BinaryTreeSpec extends AnyFlatSpec with Matchers {
     val northernCell = maze
       .cells(neighbor.point.y)(neighbor.point.x)
 
-    northernCell.south.get.hasLink shouldBe true
-    northernCell.south.get.point shouldBe cellWithNorthernNeighbor.point
+    assert(northernCell.south.get.hasLink)
+    assertEquals(northernCell.south.get.point, cellWithNorthernNeighbor.point)
   }
 
-  "The binaryTreeAlg" should "eastmost column should not have eastern neighbors" in {
+  test("eastmost column should not have eastern neighbors") {
     val grid = Grid.init(rows, columns)
     val maze = binaryTree(grid)
 
-    maze.cells.forall(y => y(maxX).east.isEmpty) shouldBe true
+    assert(maze.cells.forall(y => y(maxX).east.isEmpty))
   }
-  "The binaryTreeAlg" should "southmost row should not have southern neighbors" in {
+  test("southmost row should not have southern neighbors") {
     val grid = Grid.init(rows, columns)
     val maze = binaryTree(grid)
 
-    maze.cells.head.forall(c => c.south.isEmpty) shouldBe true
+    assert(maze.cells.head.forall(c => c.south.isEmpty))
   }
-  "The binaryTreeAlg" should "have every link set bidirectional" in {
+  test("have every link set bidirectional") {
     val grid = Grid.init(rows, columns)
     val maze = binaryTree(grid)
-    maze.cells.forall(
-      _.forall(c =>
-        Cell
-          .neighbors(c)
-          .filter(_.hasLink)
-          forall { n =>
-            val refCell = maze.cells(n.point.y)(n.point.x)
-            val correctReference = n.point == refCell.point
-            val isLinked = n.direction match {
-              case North => refCell.south.exists(_.hasLink)
-              case South => refCell.north.exists(_.hasLink)
-              case East  => refCell.west.exists(_.hasLink)
-              case West  => refCell.east.exists(_.hasLink)
+    assert(
+      maze.cells.forall(
+        _.forall(c =>
+          Cell
+            .neighbors(c)
+            .filter(_.hasLink)
+            .forall { n =>
+              val refCell = maze.cells(n.point.y)(n.point.x)
+              val correctReference = n.point == refCell.point
+              val isLinked = n.direction match {
+                case North => refCell.south.exists(_.hasLink)
+                case South => refCell.north.exists(_.hasLink)
+                case East  => refCell.west.exists(_.hasLink)
+                case West  => refCell.east.exists(_.hasLink)
+              }
+              correctReference && isLinked
             }
-            correctReference && isLinked
-          }
+        )
       )
-    ) shouldBe true
+    )
   }
 }

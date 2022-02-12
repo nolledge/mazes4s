@@ -1,20 +1,19 @@
 package mazes.generators
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+
 import mazes.models.Grid._
 import mazes.models.Grid
 import mazes.generators.SideWinder._
 
-class SideWinderSpec extends AnyFlatSpec with Matchers {
+class SideWinderSpec extends munit.FunSuite {
   val mazeSize: Int = 3
   val maxIndex = mazeSize - 1
-  "The SiedeWinder" should "have a corridor in the northmost row" in {
+  test("should have a corridor in the northmost row") {
     val grid = Grid.init(mazeSize, mazeSize)
     val maze = sideWinder(grid)
-    maze
-      .cells(maxIndex)
-      .forall(c =>
-        c.north.isEmpty && c.east.map(_.hasLink).getOrElse(true)
-      ) shouldBe true
+    assert(
+      maze
+        .cells(maxIndex)
+        .forall(c => c.north.isEmpty && c.east.map(_.hasLink).getOrElse(true))
+    )
   }
 }

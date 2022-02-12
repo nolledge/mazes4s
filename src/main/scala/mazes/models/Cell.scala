@@ -10,7 +10,7 @@ final case class Cell(
     east: Option[Neighbor]
 )
 
-object Cell {
+object Cell:
 
   def withUnlinkedNeighbors(
       point: Point,
@@ -40,5 +40,3 @@ object Cell {
       case East  => c.copy(east = c.east.map(_.copy(hasLink = true)))
       case West  => c.copy(west = c.west.map(_.copy(hasLink = true)))
     }
-
-}

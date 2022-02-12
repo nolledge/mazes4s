@@ -8,7 +8,7 @@ final case class Grid(
     cells: Vector[Vector[Cell]]
 )
 
-object Grid {
+object Grid:
 
   def init(rows: Int, columns: Int): Grid = {
     val yI = 0.to(rows - 1).toVector
@@ -32,6 +32,8 @@ object Grid {
     )
   }
 
+  def cellSet(g: Grid): Set[Cell] = g.cells.flatten.toSet
+
   def get(g: Grid)(p: Point): Option[Cell] =
     g.cells.lift(p.y).flatMap(_.lift(p.x))
 
@@ -43,7 +45,7 @@ object Grid {
         g.cells.updated(c.point.y, g.cells(c.point.y).updated(c.point.x, c))
     )
 
-  implicit val gridShow: Show[Grid] = (g: Grid) => {
+  given gridShow: Show[Grid] = (g: Grid) =>
     def topRow(c: Cell) =
       c match {
         case Cell(_, _, _, _, Some(e)) if e.hasLink => "    "
@@ -62,5 +64,3 @@ object Grid {
             "+" + r.map(bottom).mkString("+") + "+" + "\n"
         }
         .mkString("")
-  }
-}
