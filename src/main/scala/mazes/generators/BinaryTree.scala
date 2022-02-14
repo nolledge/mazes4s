@@ -20,14 +20,14 @@ object BinaryTree extends BidiUpdater {
   // Fixme: implement direction
   def tearWall(c: Cell): Cell =
     c match {
-      case Cell(_, _, _, None, None) => c
-      case Cell(_, _, _, Some(_), None) =>
+      case Cell(_, _, _, None, None, _) => c
+      case Cell(_, _, _, Some(_), None, _) =>
         Cell.linkCell(c, North)
-      case Cell(_, _, _, None, Some(_)) =>
+      case Cell(_, _, _, None, Some(_), _) =>
         Cell.linkCell(c, East)
-      case Cell(_, _, _, Some(_), Some(_)) if Random.nextInt(2) == 0 =>
+      case Cell(_, _, _, Some(_), Some(_), _) if Random.nextInt(2) == 0 =>
         Cell.linkCell(c, East)
-      case Cell(_, _, _, Some(_), Some(_)) =>
+      case Cell(_, _, _, Some(_), Some(_), _) =>
         Cell.linkCell(c, North)
     }
 

@@ -48,13 +48,15 @@ object Grid:
   given gridShow: Show[Grid] = (g: Grid) =>
     def topRow(c: Cell) =
       c match {
-        case Cell(_, _, _, _, Some(e)) if e.hasLink => "    "
-        case _                                      => "   |"
+        case Cell(_, _, _, _, Some(e), isPath) if e.hasLink && isPath => "  x "
+        case Cell(_, _, _, _, Some(e), isPath) if e.hasLink           => "    "
+        case c if c.isPath                                            => "  x|"
+        case _                                                        => "   |"
       }
     def bottom(c: Cell) =
       c match {
-        case Cell(_, _, Some(s), _, _) if s.hasLink => "   "
-        case _                                      => "---"
+        case Cell(_, _, Some(s), _, _, _) if s.hasLink => "   "
+        case _                                         => "---"
       }
 
     "+" + "---+".repeat(g.columns) + "\n" +

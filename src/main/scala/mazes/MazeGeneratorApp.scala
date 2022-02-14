@@ -9,15 +9,36 @@ import mazes.models.Point
 
 object MazeGeneratorApp extends App:
 
-  val startGrid = Grid.init(5, 5)
+  val gridWidth = 50
+  val gridHeight = 50
 
+  val startGrid = Grid.init(gridWidth, gridHeight)
   val binTreeMaze = binaryTree(startGrid)
   val siewinderMaze = sideWinder(startGrid)
 
+  val southWest = Grid.get(siewinderMaze)(Point(0, 0)).get
+  val southEast = Grid.get(siewinderMaze)(Point(gridWidth - 1, 0)).get
+
   println("Binary Tree Maze")
   println(show(binTreeMaze))
-  println(
-    Dijkstra.fromRoot(Grid.get(binTreeMaze)(Point(0, 0)).get, binTreeMaze)
-  )
   println("Sidewinder Maze")
   println(show(siewinderMaze))
+  val shortestPath: List[Point] = Dijkstra
+    .shortestPath(
+      southWest,
+      southEast,
+      Dijkstra.dijkstraDistances(
+        southWest,
+        siewinderMaze
+      )
+    )
+    .map(_.point)
+
+  val mazeWithPath = shortestPath.foldLeft(siewinderMaze) {
+    case (grid, point) =>
+      Grid
+        .get(grid)(point)
+        .fold(grid)(c => Grid.update(grid, c.copy(isPath = true)))
+
+  }
+  println(show(mazeWithPath))

@@ -7,7 +7,8 @@ final case class Cell(
     west: Option[Neighbor],
     south: Option[Neighbor],
     north: Option[Neighbor],
-    east: Option[Neighbor]
+    east: Option[Neighbor],
+    isPath: Boolean = false
 )
 
 object Cell:
